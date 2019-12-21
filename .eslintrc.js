@@ -9,8 +9,9 @@ module.exports = {
   ],
   rules: {
     'dot-notation': 'off',
+    'no-console': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'linebreak-style': ['error', 'windows']
+    'linebreak-style': ['error', 'windows'],
   },
   parserOptions: {
     parser: 'babel-eslint',

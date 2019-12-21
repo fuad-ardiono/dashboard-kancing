@@ -5,7 +5,7 @@
                 <b-col>
                     <b-card class="m-3">
                     <h1>Form Signup</h1>
-                    <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+                    <b-form v-if="show">
                         <b-form-group
                             id="input-group-1"
                             label="Email address:"
@@ -22,13 +22,14 @@
                         </b-form-group>
 
                         <b-form-group
-                            id="input-group-1"
+                            id="input-group-2"
                             label="Username:"
-                            label-for="input-1"
+                            label-for="input-2"
                         >
                             <b-form-input
-                            id="input-1"
+                            id="input-2"
                             v-model="form.userName"
+                            @input="handleUsername"
                             type="text"
                             required
                             placeholder="Enter Username"
@@ -36,12 +37,12 @@
                         </b-form-group>
 
                         <b-form-group
-                            id="input-group-1"
+                            id="input-group-3"
                             label="First Name:"
-                            label-for="input-1"
+                            label-for="input-3"
                         >
                             <b-form-input
-                            id="input-1"
+                            id="input-3"
                             v-model="form.firstName"
                             type="text"
                             required
@@ -50,12 +51,12 @@
                         </b-form-group>
 
                         <b-form-group
-                            id="input-group-1"
+                            id="input-group-4"
                             label="Last Name:"
-                            label-for="input-1"
+                            label-for="input-4"
                         >
                             <b-form-input
-                            id="input-1"
+                            id="input-4"
                             v-model="form.lastName"
                             type="text"
                             required
@@ -63,16 +64,20 @@
                             ></b-form-input>
                         </b-form-group>
 
-                        <b-form-group id="input-group-2" label="Password:" label-for="input-2">
+                        <b-form-group id="input-group-5" label="Password:" label-for="input-5">
                             <b-form-input
-                            id="input-2"
+                            id="input-5"
                             type="password"
                             v-model="form.password"
                             required
                             ></b-form-input>
                         </b-form-group>
-                        <b-button to="/signup" variant="success">Sign Up</b-button>
-                        <b-button to="/" variant="danger">Cancel</b-button>
+                          <b-button variant="success" @click="onSubmit" class="mr-1">
+                            Sign Up
+                          </b-button>
+                          <b-button variant="danger" @click="onCancel" class="ml-1">
+                            Cancel
+                          </b-button>
                         </b-form>
                     </b-card>
                 </b-col>
@@ -82,6 +87,13 @@
 </template>
 
 <script>
+/* eslint-disable prefer-arrow-callback */
+
+import _ from 'lodash';
+import { RepositoryFactory } from '../repository/RepositoryFactory';
+
+const AuthRepo = RepositoryFactory.get('auth');
+
 export default {
   data() {
     return {
@@ -94,6 +106,33 @@ export default {
       },
       show: true,
     };
+  },
+  watch: {
+    'form.email': function () {
+      console.log('watch email');
+      console.log(`current value email ${this.form.email}`);
+    },
+  },
+  methods: {
+    async onSubmit(e) {
+      try {
+        e.preventDefault();
+        const payload = this.form;
+        await AuthRepo.createUser(payload);
+        await this.$router.push('/');
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    onCancel() {
+      this.$router.push('/');
+    },
+    handleUsername: _.debounce(function () {
+      this.form.userName = _.toLower(this.form.userName);
+    }, 200),
+    onReset(e) {
+      console.log('e', e);
+    },
   },
 };
 </script>
