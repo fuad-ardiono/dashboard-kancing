@@ -38,15 +38,6 @@ export default {
   props: {
     msg: String,
   },
-  methods: {
-    exampleFunction() {
-      console.log('hello world');
-    },
-  },
-  created() {
-    console.log('Hello world created');
-    this.exampleFunction();
-  },
 };
 </script>
 
