@@ -68,6 +68,7 @@
                             <b-form-input
                             id="input-5"
                             type="password"
+                            placeholder="Enter your password"
                             v-model="form.password"
                             required
                             ></b-form-input>
@@ -88,7 +89,6 @@
 
 <script>
 /* eslint-disable prefer-arrow-callback */
-
 import _ from 'lodash';
 import { RepositoryFactory } from '../repository/RepositoryFactory';
 
@@ -107,26 +107,25 @@ export default {
       show: true,
     };
   },
-  watch: {
-    'form.email': function () {
-      console.log('watch email');
-      console.log(`current value email ${this.form.email}`);
-    },
-  },
   methods: {
     async onSubmit(e) {
       try {
         e.preventDefault();
         const payload = this.form;
         await AuthRepo.createUser(payload);
-        await this.$router.push('/');
+        this.$noty.success('Sign Up success,you can login right now!');
+        await this.$router.push('/login');
       } catch (err) {
+        if (err.data) {
+          this.$noty.error('Sign Up failed, please check your input!');
+        }
         throw new Error(err);
       }
     },
     onCancel() {
       this.$router.push('/');
     },
+    // eslint-disable-next-line func-names
     handleUsername: _.debounce(function () {
       this.form.userName = _.toLower(this.form.userName);
     }, 200),

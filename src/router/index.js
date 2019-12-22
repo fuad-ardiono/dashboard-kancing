@@ -3,6 +3,8 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import Login from '../views/Login.vue';
 import Signup from '../views/Signup.vue';
+import Dashboard from '../views/Dashboard/Frame.vue';
+import User from '../views/Dashboard/User/Frame.vue';
 
 Vue.use(VueRouter);
 
@@ -29,6 +31,18 @@ const routes = [
     path: '/signup',
     name: 'signup',
     component: Signup,
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard,
+    children: [
+      {
+        path: 'user',
+        name: 'User Module',
+        component: User,
+      },
+    ],
   },
 ];
 

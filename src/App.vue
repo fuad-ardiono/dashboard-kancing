@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <NavBar/>
+    <NavBar :typeNavbar="typeNavbar"/>
     <router-view/>
   </div>
 </template>
@@ -11,6 +11,18 @@ import NavBar from '@/components/Navbar.vue';
 export default {
   components: {
     NavBar,
+  },
+  data() {
+    return {
+      typeNavbar: 'home',
+    };
+  },
+  created() {
+    if (this.isLoggedIn()) {
+      this.typeNavbar = 'dashboard';
+    } else {
+      this.typeNavbar = 'home';
+    }
   },
 };
 </script>

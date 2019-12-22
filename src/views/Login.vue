@@ -5,7 +5,7 @@
                 <b-col>
                     <b-card class="m-3">
                     <h1>Form Login</h1>
-                    <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+                    <b-form  v-if="show">
                         <b-form-group
                             id="input-group-1"
                             label="Email address:"
@@ -29,8 +29,14 @@
                             required
                             ></b-form-input>
                         </b-form-group>
-                        <b-button type="submit" variant="primary">Log in</b-button>
-                        <b-button to="/signup" variant="success">Sign Up</b-button>
+                        <b-button type="submit" variant="primary"
+                                  @click="onSubmit">
+                          Log in
+                        </b-button>
+                        <b-button to="/signup" variant="success"
+                                  @click="handleSignup">
+                          Sign Up
+                        </b-button>
                         </b-form>
                     </b-card>
                 </b-col>
@@ -40,6 +46,9 @@
 </template>
 
 <script>
+import { RepositoryFactory } from '../repository/RepositoryFactory';
+
+const AuthRepo = RepositoryFactory.get('auth');
 export default {
   data() {
     return {
@@ -49,6 +58,25 @@ export default {
       },
       show: true,
     };
+  },
+  methods: {
+    async onSubmit(e) {
+      try {
+        e.preventDefault();
+        const { data } = await AuthRepo.login(this.form);
+        localStorage.setItem('token', data.token);
+        this.$parent.typeNavbar = 'dashboard';
+        await this.$router.push('/dashboard');
+      } catch (err) {
+        if (err.data) {
+          this.$noty.error('Login Failed! Email or password wrong');
+        }
+        throw new Error(err);
+      }
+    },
+    handleSignup() {
+      this.$router.push('/signup');
+    },
   },
 };
 </script>

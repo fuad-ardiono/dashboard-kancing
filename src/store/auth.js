@@ -26,6 +26,7 @@ export default {
       try {
         const { username, password } = payload;
         const { data } = await AuthRepo.login(username, password);
+        console.log(data);
         console.log('data', data);
 
         // commit('setJwt', await data.result.data.token);
